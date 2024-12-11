@@ -22,7 +22,8 @@ export default new Elysia()
           <ol>
             <li>
               <p>
-                Please transfer <strong>฿${bill.amount}</strong> to me using the
+                Please transfer <strong>฿${bill.amount}</strong> to
+                <strong>${Bun.env["OWNER_ACCOUNT_NAME"]}</strong> using the
                 following QR code:
               </p>
               <p class="text-center">
@@ -37,7 +38,10 @@ export default new Elysia()
               </p>
             </li>
             <li>
-              <p>Upload or scan the slip after you have made the transfer.</p>
+              <p>
+                Upload the slip image or scan the slip QR code after you have
+                made the transfer.
+              </p>
               <div class="d-flex justify-content-center flex-wrap gap-2">
                 <button
                   class="btn btn-primary d-inline-flex align-items-center gap-1"

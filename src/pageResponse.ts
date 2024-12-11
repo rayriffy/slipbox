@@ -29,7 +29,7 @@ export async function pageResponse(title: string, body: Html) {
         ></script>
       </head>
       <body>
-        <div class="p-4">${body}</div>
+        <div class="p-4" style="margin: 0 auto; max-width: 480px;">${body}</div>
       </body>
     </html>`);
   return new Response(payload, {
