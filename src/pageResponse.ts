@@ -1,7 +1,8 @@
-import { type Html, html, renderHtmlAsync } from "@thai/html";
+import { fromAnyIterable } from "@sec-ant/readable-stream/ponyfill/fromAnyIterable";
+import { type Html, html, renderHtmlStream } from "@thai/html";
 
 export async function pageResponse(title: string, body: Html) {
-  const payload = await renderHtmlAsync(html`<!DOCTYPE html>
+  const stream = renderHtmlStream(html`<!DOCTYPE html>
     <html lang="en">
       <head>
         <meta charset="utf-8" />
@@ -32,7 +33,7 @@ export async function pageResponse(title: string, body: Html) {
         <div class="p-4" style="margin: 0 auto; max-width: 480px;">${body}</div>
       </body>
     </html>`);
-  return new Response(payload, {
+  return new Response(fromAnyIterable(stream), {
     status: 200,
     headers: { "Content-Type": "text/html" },
   });

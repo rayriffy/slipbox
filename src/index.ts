@@ -211,13 +211,44 @@ export default new Elysia()
       if (!validatePayload(verificationPayload)) {
         return error(400, "Invalid slip data received");
       }
-      bill = await updateBill(bill, {
-        status: "verificationPending",
-        verificationPayload,
-        submittedAt: Math.floor(Date.now() / 1000),
-      });
-      bill = await verifyBill(bill);
-      return redirect(`/bills/${billId}`);
+      // bill = await updateBill(bill, {
+      //   status: "verificationPending",
+      //   verificationPayload,
+      //   submittedAt: Math.floor(Date.now() / 1000),
+      // });
+      // bill = await verifyBill(bill);
+      // return redirect(`/bills/${billId}`);
+      const verifyAndRedirect = async () => {
+        bill = await updateBill(bill!, {
+          status: "verificationPending",
+          verificationPayload,
+          submittedAt: Math.floor(Date.now() / 1000),
+        });
+        bill = await verifyBill(bill);
+        return html`
+          <script>
+            document.getElementById("progress-alert").textContent =
+              "Redirecting…";
+            window.location.href = "/bills/${billId}";
+          </script>
+        `;
+      };
+      return pageResponse(
+        "Verifying payment",
+        html`
+          <div class="text-center mb-4">
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+          <div class="alert alert-info">
+            <span id="progress-alert"
+              >Now verifying your payment… Please wait!</span
+            >
+          </div>
+          ${verifyAndRedirect()}
+        `
+      );
     },
     {
       params: t.Object({
