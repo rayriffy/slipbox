@@ -18,20 +18,30 @@ export default new Elysia()
         amount: bill.amount,
       });
       const unpaid = () => {
-        return html`<p>To pay for <strong>${bill.description}</strong>:</p>
-          <ol>
+        return html`<p>
+            To pay for <strong class="text-name">${bill.description}</strong>:
+          </p>
+          <ol style="list-style: none; padding: 0;">
             <li>
               <p>
-                Please transfer <strong>฿${bill.amount}</strong> to
-                <strong>${Bun.env["OWNER_ACCOUNT_NAME"]}</strong> using the
-                following QR code:
+                <strong class="text-emphasis">Step 1 of 2:</strong>
+                Please transfer
+                <strong class="text-name">฿${bill.amount}</strong> to
+                <strong class="text-name"
+                  >${Bun.env["OWNER_ACCOUNT_NAME"]}</strong
+                >
+                using the following QR code:
               </p>
               <p class="text-center">
-                <span style="display: inline-block;background:#fff;padding:8px">
-                  <qr-code text="${promptpayPayload}" size="10"></qr-code>
+                <span class="d-flex justify-content-center mb-1">
+                  <span class="d-block p-2 bg-white rounded">
+                    <qr-code text="${promptpayPayload}" size="10"></qr-code>
+                  </span>
                 </span>
-                <br />
-                <small class="text-muted lh-sm d-block">
+                <small
+                  class="text-muted lh-sm d-block"
+                  style="text-wrap: balance"
+                >
                   Scan the above QR code with your mobile banking app or take a
                   screenshot and open it in your banking app.
                 </small>
@@ -39,6 +49,7 @@ export default new Elysia()
             </li>
             <li>
               <p>
+                <strong class="text-emphasis">Step 2 of 2:</strong>
                 Upload the slip image or scan the slip QR code after you have
                 made the transfer.
               </p>
@@ -182,7 +193,7 @@ export default new Elysia()
       return pageResponse(
         "Bill",
         html`
-          <p>Hello, <strong>${bill.payer}</strong>.</p>
+          <p>Hello, <strong class="text-name">${bill.payer}</strong>.</p>
           ${bill.status === "unpaid" ? unpaid() : renderStatus()}
         `
       );
