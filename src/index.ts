@@ -28,7 +28,7 @@ export default new Elysia()
                 Please transfer
                 <strong class="text-name">฿${bill.amount}</strong> to
                 <strong class="text-name"
-                  >${Bun.env["OWNER_ACCOUNT_NAME"]}</strong
+                  >${Bun.env["OWNER_ACCOUNT_NAME"]?.split("|")[0]}</strong
                 >
                 using the following QR code:
               </p>

@@ -8,4 +8,5 @@ test("matchWithMask", () => {
   expect(matchWithMask("1234567893", "123456789x")).toBe(true);
   expect(matchWithMask("1234567893", "12345678xx")).toBe(true);
   expect(matchWithMask("1234567893", "12345678x")).toBe(false);
+  expect(matchWithMask("12-3456-78-93", "12345678x")).toBe(false);
 });
