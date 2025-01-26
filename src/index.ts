@@ -68,6 +68,19 @@ export default new Elysia()
                   <iconify-icon icon="mdi:scan-helper"></iconify-icon>
                   Scan
                 </button>
+                ${bill.verificationPayload
+                  ? html`
+                      <button
+                        class="btn btn-warning d-inline-flex align-items-center gap-1"
+                        type="button"
+                        onClick="handlePayload(unescape('${escape(
+                          bill.verificationPayload
+                        )}'))"
+                      >
+                        Retry
+                      </button>
+                    `
+                  : ""}
               </div>
             </li>
           </ol>
@@ -206,12 +219,7 @@ export default new Elysia()
   )
   .post(
     "/bills/:billId",
-    async ({
-      params: { billId },
-      body: { verificationPayload },
-      error,
-      redirect,
-    }) => {
+    async ({ params: { billId }, body: { verificationPayload }, error }) => {
       let bill = await loadBill(billId);
       if (!bill) {
         return error(404, "Bill not found");
@@ -222,13 +230,6 @@ export default new Elysia()
       if (!validatePayload(verificationPayload)) {
         return error(400, "Invalid slip data received");
       }
-      // bill = await updateBill(bill, {
-      //   status: "verificationPending",
-      //   verificationPayload,
-      //   submittedAt: Math.floor(Date.now() / 1000),
-      // });
-      // bill = await verifyBill(bill);
-      // return redirect(`/bills/${billId}`);
       const verifyAndRedirect = async () => {
         bill = await updateBill(bill!, {
           status: "verificationPending",
