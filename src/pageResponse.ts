@@ -26,18 +26,19 @@ export async function pageResponse(title: string, body: Html) {
               -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans",
               "Liberation Sans", Arial, sans-serif, "Apple Color Emoji",
               "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-            --bs-body-bg: #353433;
-            --bs-secondary-color: #8b8685;
+            --bs-body-bg: #ffffff;
+            --bs-secondary-color: oklch(55.1% 0.027 264.364);
+            --bs-body-color: oklch(13% 0.028 261.692);
             letter-spacing: 0.04ch;
           }
           body {
             -webkit-font-smoothing: antialiased;
           }
           .text-name {
-            color: #bbeeff;
+            color: oklch(54.6% 0.245 262.881);
           }
           .text-emphasis {
-            color: #d7fc70;
+            color: oklch(51.4% 0.222 16.935);
           }
         </style>
         <script

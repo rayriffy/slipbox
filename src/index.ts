@@ -141,7 +141,10 @@ export default new Elysia()
             );
             async function handleImage(image) {
               const reader = await readerPromise;
+              console.log('reader ready', reader);
+              console.log('image', image);
               const result = await reader.decodeFromImageElement(image);
+              console.log('result', result);
               return handlePayload(result.text);
             }
             async function handlePayload(payload) {

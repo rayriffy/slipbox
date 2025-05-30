@@ -3,10 +3,11 @@ import { ofetch } from "ofetch";
 export async function verifySlip(payload: string) {
   const url = Bun.env["SLIP_VERIFY_API_URL"]!;
   const auth = Bun.env["SLIP_VERIFY_AUTHORIZATION"]!;
+
   const result = await ofetch(`${url}`, {
-    headers: { authorization: auth },
+    headers: { 'x-authorization': auth },
     method: "POST",
-    body: { payload },
+    body: { data: payload },
   });
   return result;
 }
