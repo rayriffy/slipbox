@@ -8,12 +8,13 @@ export async function verifyBill(bill: Bill) {
   }
   let result: { ok: true } | { ok: false; message: string };
   try {
-    const verificationResult = await verifySlip(payload);
+    const { data: verificationResult } = await verifySlip(payload);
+    console.log('verificationResult', verificationResult);
     bill = await updateBill(bill, {
       verificationResult: JSON.stringify(verificationResult, null, 2),
-      paymentDiscriminator: verificationResult.discriminator,
+      paymentDiscriminator: verificationResult.transRef,
     });
-    const alreadyPaid = await isAlreadyPaid(verificationResult.discriminator);
+    const alreadyPaid = await isAlreadyPaid(verificationResult.transRef);
     if (alreadyPaid) {
       result = { ok: false, message: "This slip has already been used" };
     } else {

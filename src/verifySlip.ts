@@ -25,25 +25,28 @@ export function matchWithMask(a: string, b: string) {
 
 export function validateVerifiedSlip(options: {
   verificationResult: {
-    discriminator: string;
-    valid: boolean;
-    data: {
-      receiver: {
-        name: string | null;
-        displayName: string | null;
-        proxy?: { type: string; value: string };
-        account?: { type: string; value: string };
-        value: string;
-      };
-      amount: number;
-    };
+    success: boolean
+    transRef: string
+    amount: number
+    receiver: {
+      displayName: string
+      name: string
+      proxy: {
+        type: string
+        value: string
+      }
+      account: {
+        type: string
+        value: string
+      }
+    }
   };
   expectedAmount: number;
 }): { ok: true } | { ok: false; message: string } {
-  if (!options.verificationResult.valid) {
+  if (!options.verificationResult.success) {
     return { ok: false, message: "Invalid slip" };
   }
-  const data = options.verificationResult.data;
+  const data = options.verificationResult;
   if (Math.abs(data.amount - options.expectedAmount) >= 0.005) {
     return { ok: false, message: "Amount mismatch" };
   }
