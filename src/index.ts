@@ -191,7 +191,7 @@ export default new Elysia()
         }
         if (bill.status === "verificationFailed") {
           statusAlert = html`<div class="alert alert-danger">
-            Your payment information could not be verified. Contact Thai to
+            Your payment information could not be verified. Contact Riffy to
             resolve this issue.
           </div>`;
         }
