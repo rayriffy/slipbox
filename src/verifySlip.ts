@@ -47,7 +47,10 @@ export function validateVerifiedSlip(options: {
     return { ok: false, message: "Invalid slip" };
   }
   const data = options.verificationResult;
-  if (Math.abs(data.amount - options.expectedAmount) >= 0.005) {
+  
+  // round it to only 2 decimal places
+  const roundedExpectedAmount = Math.round(options.expectedAmount * 100) / 100;
+  if (Math.abs(data.amount - roundedExpectedAmount) >= 0.005) {
     return { ok: false, message: "Amount mismatch" };
   }
 
