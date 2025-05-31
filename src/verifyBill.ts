@@ -9,7 +9,6 @@ export async function verifyBill(bill: Bill) {
   let result: { ok: true } | { ok: false; message: string };
   try {
     const { data: verificationResult } = await verifySlip(payload);
-    console.log('verificationResult', verificationResult);
     bill = await updateBill(bill, {
       verificationResult: JSON.stringify(verificationResult, null, 2),
       paymentDiscriminator: verificationResult.transRef,
