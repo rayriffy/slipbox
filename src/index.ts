@@ -135,8 +135,10 @@ export default new Elysia()
               "https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.5/+esm"
             );
             const readerPromise = zxingPromise.then(
-              ({ BrowserQRCodeReader }) => {
-                return new BrowserQRCodeReader();
+              ({ BrowserQRCodeReader, DecodeHintType }) => {
+                const hints = new Map();
+                hints.set(3, true);
+                return new BrowserQRCodeReader(hints);
               }
             );
             async function handleImage(image) {
