@@ -136,6 +136,7 @@ export default new Elysia()
             );
             const readerPromise = zxingPromise.then(
               ({ BrowserQRCodeReader, DecodeHintType }) => {
+                // https://github.com/zxing-js/library/blob/master/src/core/DecodeHintType.ts
                 const hints = new Map();
                 hints.set(3, true);
                 return new BrowserQRCodeReader(hints);
