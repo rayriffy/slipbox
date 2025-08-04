@@ -59,14 +59,7 @@ export default new Elysia()
                   id="uploadSlip"
                 >
                   <iconify-icon icon="mdi:upload"></iconify-icon>
-                  Upload
-                </button>
-                <button
-                  class="btn btn-primary d-inline-flex align-items-center gap-1"
-                  id="scanSlip"
-                >
-                  <iconify-icon icon="mdi:scan-helper"></iconify-icon>
-                  Scan
+                  Upload Slip Image
                 </button>
                 ${bill.verificationPayload
                   ? html`
@@ -81,6 +74,17 @@ export default new Elysia()
                       </button>
                     `
                   : ""}
+              </div>
+              <div class="mt-1 d-flex justify-content-center flex-wrap gap-2">
+                <button
+                  class="btn btn-link text-muted d-inline-flex align-items-center gap-2 text-decoration-none"
+                  id="scanSlip"
+                >
+                  <small class="d-flex"
+                    ><iconify-icon icon="mdi:scan-helper"></iconify-icon
+                  ></small>
+                  <small>Scan slip with camera</small>
+                </button>
               </div>
             </li>
           </ol>
