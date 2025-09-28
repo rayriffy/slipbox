@@ -14,6 +14,16 @@ export default new Elysia()
       if (!bill) {
         return error(404, "Bill not found");
       }
+      const billDetails: Html = bill.details
+        ? [
+            // prettier-ignore
+            html`<div class="card mb-3" style="white-space:pre-line;padding:1rem;font-size:0.85em;background:#252423;margin-top:-0.5rem;">`,
+            // prettier-ignore
+            html`<strong class="text-muted" style="font-size:0.9em;text-transform:uppercase;">Details:</strong>`,
+            bill.details.trim(),
+            html`</div>`,
+          ]
+        : "";
       const promptpayPayload = generatePayload(Bun.env["PROMPTPAY_ID"]!, {
         amount: bill.amount,
       });
@@ -21,14 +31,7 @@ export default new Elysia()
         return html`<p>
             To pay for <strong class="text-name">${bill.description}</strong>:
           </p>
-          ${bill.details
-            ? [
-                // prettier-ignore
-                html`<div class="card mb-3" style="white-space:pre-line;padding:0.5em;font-size:0.85em;background:#252423;margin-top:-0.5rem;">`,
-                bill.details.trim(),
-                html`</div>`,
-              ]
-            : ""}
+          ${billDetails}
           <ol style="list-style: none; padding: 0;">
             <li>
               <p>
@@ -206,12 +209,14 @@ export default new Elysia()
         }
         if (bill.status === "paid") {
           statusAlert = html`<div class="alert alert-success">
-            Your payment has been verified. Thanks again!
-          </div>`;
+              Your payment has been verified: You sent me ฿${bill.amount}.
+              Thanks again!
+            </div>
+            ${billDetails}`;
         }
         return html`<p>
             I received your payment information for
-            <strong>${bill.description}</strong>. Thanks!
+            <strong class="text-name">${bill.description}</strong>. Thanks!
           </p>
           ${statusAlert}`;
       };
