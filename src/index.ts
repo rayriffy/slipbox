@@ -21,6 +21,14 @@ export default new Elysia()
         return html`<p>
             To pay for <strong class="text-name">${bill.description}</strong>:
           </p>
+          ${bill.details
+            ? [
+                // prettier-ignore
+                html`<div class="card mb-3" style="white-space:pre-line;padding:0.5em;font-size:0.85em;background:#252423;margin-top:-0.5rem;">`,
+                bill.details.trim(),
+                html`</div>`,
+              ]
+            : ""}
           <ol style="list-style: none; padding: 0;">
             <li>
               <p>

@@ -4,6 +4,7 @@ export interface Bill {
   id: number;
   payer: string;
   description: string;
+  details: string;
   amount: number;
   status: "unpaid" | "verificationPending" | "verificationFailed" | "paid";
   verificationPayload: string | null;
