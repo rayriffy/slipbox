@@ -4,6 +4,7 @@ const runtime = html`<style>
     .slipbox-pages {
       display: flex;
       min-height: calc(100vh - 3rem);
+      min-height: calc(100svh - 3rem);
       gap: 1rem;
       transition: transform 0.3s ease-out;
     }
