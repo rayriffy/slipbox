@@ -125,13 +125,14 @@ export default new Elysia()
                 ${renderPageHeader(3, "Upload Slip")}
                 <div class="slipbox-page-content">
                   <p>
-                    Upload the slip image or scan the slip QR code after you
-                    have made the transfer.
+                    Please click the button below to upload the transfer slip
+                    image:
                   </p>
                   <div class="d-flex justify-content-center flex-wrap gap-2">
                     <button
-                      class="btn btn-primary d-inline-flex align-items-center gap-1"
+                      class="btn btn-d4h btn-lg d-flex justify-content-center align-items-center gap-1"
                       id="uploadSlip"
+                      style="flex: 1"
                     >
                       <iconify-icon icon="mdi:upload"></iconify-icon>
                       Upload Slip Image
@@ -149,6 +150,9 @@ export default new Elysia()
                           </button>
                         `
                       : ""}
+                  </div>
+                  <div class="mt-1 text-muted text-center">
+                    <small>— or —</small>
                   </div>
                   <div
                     class="mt-1 d-flex justify-content-center flex-wrap gap-2"
