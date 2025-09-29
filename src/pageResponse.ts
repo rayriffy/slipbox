@@ -39,6 +39,37 @@ export async function pageResponse(title: string, body: Html) {
           .text-emphasis {
             color: #d7fc70;
           }
+          .btn-d4h {
+            animation: fadeInDown 0.5s ease-out;
+            animation-delay: 0.3s;
+            animation-fill-mode: both;
+          }
+          @keyframes fadeInDown {
+            0% {
+              opacity: 0;
+              transform: translateY(-1rem);
+            }
+            100% {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          .btn-d4h {
+            --bs-btn-color: #000;
+            --bs-btn-bg: #d7fc70;
+            --bs-btn-border-color: #d7fc70;
+            --bs-btn-hover-color: #000;
+            --bs-btn-hover-bg: #e7ff80;
+            --bs-btn-hover-border-color: #e7ff80;
+            --bs-btn-focus-shadow-rgb: 11, 172, 204;
+            --bs-btn-active-color: #000;
+            --bs-btn-active-bg: #f7ff90;
+            --bs-btn-active-border-color: #f7ff90;
+            --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+            --bs-btn-disabled-color: #000;
+            --bs-btn-disabled-bg: #8b8685;
+            --bs-btn-disabled-border-color: #8b8685;
+          }
         </style>
         <script
           defer

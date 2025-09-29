@@ -3,6 +3,7 @@ import { Elysia, t } from "elysia";
 import generatePayload from "promptpay-qr";
 import { loadBill, updateBill } from "./Bill";
 import { pageResponse } from "./pageResponse";
+import { pageScroller } from "./pageScroller";
 import { validatePayload } from "./validatePayload";
 import { verifyBill } from "./verifyBill";
 
@@ -28,77 +29,154 @@ export default new Elysia()
         amount: bill.amount,
       });
       const unpaid = () => {
-        return html`<p>
-            To pay for <strong class="text-name">${bill.description}</strong>:
-          </p>
-          ${billDetails}
-          <ol style="list-style: none; padding: 0;">
-            <li>
-              <p>
-                <strong class="text-emphasis">Step 1 of 2:</strong>
-                Please transfer
-                <strong class="text-name">฿${bill.amount}</strong> to
-                <strong class="text-name"
-                  >${Bun.env["OWNER_ACCOUNT_NAME"]?.split("|")[0]}</strong
-                >
-                using the following QR code:
-              </p>
-              <p class="text-center">
-                <span class="d-flex justify-content-center mb-1">
-                  <span class="d-block p-2 bg-white rounded">
-                    <qr-code text="${promptpayPayload}" size="10"></qr-code>
-                  </span>
-                </span>
-                <small
-                  class="text-muted lh-sm d-block"
-                  style="text-wrap: balance"
-                >
-                  Scan the above QR code with your mobile banking app or take a
-                  screenshot and open it in your banking app.
-                </small>
-              </p>
-            </li>
-            <li>
-              <p>
-                <strong class="text-emphasis">Step 2 of 2:</strong>
-                Upload the slip image or scan the slip QR code after you have
-                made the transfer.
-              </p>
-              <div class="d-flex justify-content-center flex-wrap gap-2">
-                <button
-                  class="btn btn-primary d-inline-flex align-items-center gap-1"
-                  id="uploadSlip"
-                >
-                  <iconify-icon icon="mdi:upload"></iconify-icon>
-                  Upload Slip Image
-                </button>
-                ${bill.verificationPayload
-                  ? html`
-                      <button
-                        class="btn btn-warning d-inline-flex align-items-center gap-1"
-                        type="button"
-                        onClick="handlePayload(unescape('${escape(
-                          bill.verificationPayload
-                        )}'))"
-                      >
-                        Retry
-                      </button>
-                    `
-                  : ""}
+        const renderPageHeader = (page: number, title: string) => {
+          return html`<div
+            class="slipbox-page-header d-flex justify-content-between align-items-center mb-3"
+          >
+            <div class="text-muted" style="flex: 1 0 0">Slipbox</div>
+            <div class="text-muted text-center" style="flex: 2 0 0">
+              <strong>${title}</strong>
+            </div>
+            <div class="text-muted text-end" style="flex: 1 0 0">
+              Step ${page}/3
+            </div>
+          </div>`;
+        };
+        return html` ${pageScroller.runtime}
+          <div class="slipbox-pages-scroller" data-page="1">
+            <div class="slipbox-pages">
+              <div class="slipbox-page" data-page-number="1">
+                ${renderPageHeader(1, "Bill Details")}
+                <div class="slipbox-page-content">
+                  <p>
+                    Hello, <strong class="text-name">${bill.payer}</strong>.
+                  </p>
+                  <p>
+                    You received a bill from Thai for
+                    <strong class="text-name">${bill.description}</strong>.
+                  </p>
+                  ${billDetails}
+                  <p>
+                    Please click the button below to proceed to the payment
+                    page…
+                  </p>
+                </div>
+                <div class="slipbox-buttons">
+                  <button
+                    class="btn btn-d4h d-flex justify-content-center align-items-center gap-1"
+                    type="button"
+                    onclick="navigatePage(this, 1)"
+                  >
+                    Transfer ฿${bill.amount}
+                    <iconify-icon icon="mdi:chevron-right"></iconify-icon>
+                  </button>
+                </div>
               </div>
-              <div class="mt-1 d-flex justify-content-center flex-wrap gap-2">
-                <button
-                  class="btn btn-link text-muted d-inline-flex align-items-center gap-2 text-decoration-none"
-                  id="scanSlip"
-                >
-                  <small class="d-flex"
-                    ><iconify-icon icon="mdi:scan-helper"></iconify-icon
-                  ></small>
-                  <small>Scan slip with camera</small>
-                </button>
+              <div class="slipbox-page" data-page-number="2">
+                ${renderPageHeader(2, "Transfer")}
+                <div class="slipbox-page-content">
+                  <p>
+                    Please transfer
+                    <strong class="text-name">฿${bill.amount}</strong> to
+                    <strong class="text-name"
+                      >${Bun.env["OWNER_ACCOUNT_NAME"]?.split("|")[0]}</strong
+                    >
+                    via PromptPay using the following QR code:
+                  </p>
+                  <p class="text-center">
+                    <span class="d-flex justify-content-center mb-1">
+                      <span class="d-block p-2 bg-white rounded">
+                        <qr-code text="${promptpayPayload}" size="10"></qr-code>
+                      </span>
+                    </span>
+                    <small
+                      class="text-muted lh-sm d-block mt-2"
+                      style="text-wrap: balance"
+                    >
+                      Scan the above QR code with your mobile banking app or
+                      take a screenshot and open it in your banking app.
+                    </small>
+                  </p>
+                  <p>
+                    After you have made the transfer, please click the button
+                    below to upload the slip image.
+                  </p>
+                </div>
+                <div class="slipbox-buttons">
+                  <button
+                    class="btn btn-outline-secondary d-flex justify-content-center align-items-center gap-1"
+                    type="button"
+                    onclick="navigatePage(this, -1)"
+                  >
+                    <iconify-icon icon="mdi:chevron-left"></iconify-icon>
+                  </button>
+                  <button
+                    class="btn btn-d4h d-flex justify-content-center align-items-center gap-1"
+                    type="button"
+                    onclick="navigatePage(this, 1)"
+                  >
+                    Upload Slip
+                    <iconify-icon icon="mdi:chevron-right"></iconify-icon>
+                  </button>
+                </div>
               </div>
-            </li>
-          </ol>
+
+              <div class="slipbox-page" data-page-number="3">
+                ${renderPageHeader(3, "Upload Slip")}
+                <div class="slipbox-page-content">
+                  <p>
+                    Upload the slip image or scan the slip QR code after you
+                    have made the transfer.
+                  </p>
+                  <div class="d-flex justify-content-center flex-wrap gap-2">
+                    <button
+                      class="btn btn-primary d-inline-flex align-items-center gap-1"
+                      id="uploadSlip"
+                    >
+                      <iconify-icon icon="mdi:upload"></iconify-icon>
+                      Upload Slip Image
+                    </button>
+                    ${bill.verificationPayload
+                      ? html`
+                          <button
+                            class="btn btn-warning d-inline-flex align-items-center gap-1"
+                            type="button"
+                            onClick="handlePayload(unescape('${escape(
+                              bill.verificationPayload
+                            )}'))"
+                          >
+                            Retry
+                          </button>
+                        `
+                      : ""}
+                  </div>
+                  <div
+                    class="mt-1 d-flex justify-content-center flex-wrap gap-2"
+                  >
+                    <button
+                      class="btn btn-link text-muted d-inline-flex align-items-center gap-2 text-decoration-none"
+                      id="scanSlip"
+                    >
+                      <small class="d-flex"
+                        ><iconify-icon icon="mdi:scan-helper"></iconify-icon
+                      ></small>
+                      <small>Scan slip with camera</small>
+                    </button>
+                  </div>
+                </div>
+                <div class="slipbox-buttons">
+                  <button
+                    class="btn btn-outline-secondary d-flex justify-content-center align-items-center gap-1"
+                    type="button"
+                    onclick="navigatePage(this, -1)"
+                  >
+                    <iconify-icon icon="mdi:chevron-left"></iconify-icon>
+                  </button>
+                  <div></div>
+                </div>
+              </div>
+            </div>
+          </div>
           <form id="form" class="d-none" method="post">
             <input
               type="hidden"
@@ -212,9 +290,24 @@ export default new Elysia()
               Your payment has been verified: You sent me ฿${bill.amount}.
               Thanks again!
             </div>
-            ${billDetails}`;
+            ${billDetails}
+
+            <div class="text-muted mt-5">
+              <small>
+                <a
+                  href="https://www.youtube.com/watch?v=6jlH0t67IFs"
+                  class="text-muted"
+                  style="text-decoration: none"
+                  >Curious how this works?<br />Check out my YouTube video about
+                  Slipbox.</a
+                >
+              </small>
+            </div> `;
         }
-        return html`<p>
+        return html` <p>
+            Hello, <strong class="text-name">${bill.payer}</strong>.
+          </p>
+          <p>
             I received your payment information for
             <strong class="text-name">${bill.description}</strong>. Thanks!
           </p>
@@ -222,10 +315,7 @@ export default new Elysia()
       };
       return pageResponse(
         "Bill",
-        html`
-          <p>Hello, <strong class="text-name">${bill.payer}</strong>.</p>
-          ${bill.status === "unpaid" ? unpaid() : renderStatus()}
-        `
+        bill.status === "unpaid" ? unpaid() : renderStatus()
       );
     },
     {
