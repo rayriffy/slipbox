@@ -52,7 +52,7 @@ export default new Elysia()
                     Hello, <strong class="text-name">${bill.payer}</strong>.
                   </p>
                   <p>
-                    You received a bill from Thai for
+                    You received a bill from Riffy for
                     <strong class="text-name">${bill.description}</strong>.
                   </p>
                   ${billDetails}
