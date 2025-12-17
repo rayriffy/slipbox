@@ -198,7 +198,6 @@ export default new Elysia()
               </div>
             </div>
           </div>
-
           <form id="form" class="d-none" method="post">
             <input
               type="hidden"
@@ -253,14 +252,55 @@ export default new Elysia()
               ({ BrowserQRCodeReader, DecodeHintType }) => {
                 // https://github.com/zxing-js/library/blob/master/src/core/DecodeHintType.ts
                 const hints = new Map();
-                hints.set(3, true);
+                hints.set(3, true); // TRY_HARDER
                 return new BrowserQRCodeReader(hints);
               }
             );
+            function resizeImageToCanvas(image, maxDimension) {
+              const canvas = document.createElement('canvas');
+              const ctx = canvas.getContext('2d');
+              let { width, height } = image;
+              
+              if (width > height && width > maxDimension) {
+                height = Math.round((height * maxDimension) / width);
+                width = maxDimension;
+              } else if (height > maxDimension) {
+                width = Math.round((width * maxDimension) / height);
+                height = maxDimension;
+              }
+              
+              canvas.width = width;
+              canvas.height = height;
+              ctx.drawImage(image, 0, 0, width, height);
+              return canvas;
+            }
+
             async function handleImage(image) {
               const reader = await readerPromise;
-              const result = await reader.decodeFromImageElement(image);
-              return handlePayload(result.text);
+              
+              // Try multiple strategies: original, then resized versions
+              // Resizing helps when JPEG compression artifacts cause QR checksum errors
+              const strategies = [
+                { name: 'original', source: image },
+                { name: 'resize-800', source: resizeImageToCanvas(image, 800) },
+                { name: 'resize-600', source: resizeImageToCanvas(image, 600) },
+                { name: 'resize-400', source: resizeImageToCanvas(image, 400) },
+              ];
+              
+              let lastError = null;
+              for (const strategy of strategies) {
+                try {
+                  const result = strategy.source instanceof HTMLCanvasElement
+                    ? await reader.decodeFromCanvas(strategy.source)
+                    : await reader.decodeFromImageElement(strategy.source);
+                  return handlePayload(result.text);
+                } catch (decodeError) {
+                  lastError = decodeError;
+                }
+              }
+              
+              // All strategies failed
+              throw lastError;
             }
             async function handlePayload(payload) {
               verificationPayloadInput.value = payload;
