@@ -124,6 +124,23 @@ export default new Elysia()
               <div class="slipbox-page" data-page-number="3">
                 ${renderPageHeader(3, "Upload Slip")}
                 <div class="slipbox-page-content">
+                  <!-- Error Alert -->
+                  <div id="errorAlert" class="alert alert-danger d-none">
+                    <div class="d-flex align-items-start gap-2">
+                      <iconify-icon icon="mdi:alert-circle" style="font-size:1.25rem;margin-top:0.125rem;"></iconify-icon>
+                      <div style="flex:1;">
+                        <strong>QR Code Not Detected</strong>
+                        <p class="mb-2" style="font-size:0.9em;">We could not detect a QR code in the provided image. Please try scanning the slip with your camera instead.</p>
+                        <div class="d-flex gap-2 flex-wrap">
+                          <button type="button" class="btn btn-sm btn-outline-danger" id="errorAlertClose">Dismiss</button>
+                          <button type="button" class="btn btn-sm btn-danger d-inline-flex align-items-center gap-1" id="scanFromAlert">
+                            <iconify-icon icon="mdi:scan-helper"></iconify-icon>
+                            Scan with Camera
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                   <p>
                     Please click the button below to upload the transfer slip
                     image:
@@ -181,6 +198,7 @@ export default new Elysia()
               </div>
             </div>
           </div>
+
           <form id="form" class="d-none" method="post">
             <input
               type="hidden"
@@ -252,9 +270,38 @@ export default new Elysia()
               uploadSlip.disabled = true;
               scanSlip.disabled = true;
             }
+            const errorAlert = document.getElementById("errorAlert");
+            const errorAlertClose = document.getElementById("errorAlertClose");
+            const scanFromAlert = document.getElementById("scanFromAlert");
+
+            function showErrorAlert() {
+              errorAlert.classList.remove("d-none");
+            }
+            function hideErrorAlert() {
+              errorAlert.classList.add("d-none");
+            }
+
             uploadSlip.addEventListener("click", async () => {
-              const image = await obtainImage();
-              handleImage(image);
+              try {
+                const image = await obtainImage();
+                await handleImage(image);
+              } catch (error) {
+                console.error(error);
+                // Show error alert if QR code detection fails
+                if (error.name === "NotFoundException" || error.message?.includes("No MultiFormat Readers")) {
+                  showErrorAlert();
+                } else if (error.message !== "No file selected" && error.message !== "File selection cancelled") {
+                  // Show alert for other decoding errors, but not for user cancellation
+                  showErrorAlert();
+                }
+              }
+            });
+
+            errorAlertClose.addEventListener("click", hideErrorAlert);
+
+            scanFromAlert.addEventListener("click", async () => {
+              hideErrorAlert();
+              handlePayload(await scanQr());
             });
             async function scanQr() {
               return new Promise((resolve, reject) => {
