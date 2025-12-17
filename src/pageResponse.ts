@@ -3,7 +3,7 @@ import { type Html, html, renderHtmlStream } from "@thai/html";
 
 export async function pageResponse(title: string, body: Html) {
   const stream = renderHtmlStream(html`<!DOCTYPE html>
-    <html lang="en" data-bs-theme="dark">
+    <html lang="en" data-bs-theme="light">
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -56,16 +56,16 @@ export async function pageResponse(title: string, body: Html) {
             }
           }
           .btn-d4h {
-            --bs-btn-color: #000;
-            --bs-btn-bg: #d7fc70;
-            --bs-btn-border-color: #d7fc70;
-            --bs-btn-hover-color: #000;
-            --bs-btn-hover-bg: #e7ff80;
-            --bs-btn-hover-border-color: #e7ff80;
+            --bs-btn-color: #fff;
+            --bs-btn-bg: oklch(54.6% 0.245 262.881);
+            --bs-btn-border-color: oklch(54.6% 0.245 262.881);
+            --bs-btn-hover-color: #fff;
+            --bs-btn-hover-bg: oklch(62.3% 0.214 259.815);
+            --bs-btn-hover-border-color: oklch(62.3% 0.214 259.815);
             --bs-btn-focus-shadow-rgb: 11, 172, 204;
             --bs-btn-active-color: #000;
-            --bs-btn-active-bg: #f7ff90;
-            --bs-btn-active-border-color: #f7ff90;
+            --bs-btn-active-bg: oklch(42.4% 0.199 265.638);
+            --bs-btn-active-border-color: oklch(42.4% 0.199 265.638);
             --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
             --bs-btn-disabled-color: #000;
             --bs-btn-disabled-bg: #8b8685;
