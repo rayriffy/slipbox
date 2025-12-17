@@ -297,19 +297,7 @@ export default new Elysia()
               Your payment has been verified: You sent me ฿${bill.amount}.
               Thanks again!
             </div>
-            ${billDetails}
-
-            <div class="text-muted mt-5">
-              <small>
-                <a
-                  href="https://www.youtube.com/watch?v=6jlH0t67IFs"
-                  class="text-muted"
-                  style="text-decoration: none"
-                  >Curious how this works?<br />Check out my YouTube video about
-                  Slipbox.</a
-                >
-              </small>
-            </div> `;
+            ${billDetails} `;
         }
         return html` <p>
             Hello, <strong class="text-name">${bill.payer}</strong>.
